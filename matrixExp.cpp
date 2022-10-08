@@ -16,8 +16,8 @@ typedef vector<pll> vpl;
 typedef set<ll> sll;
 
 // Loop
-#define loop(i, Start, End, Inc) for (ll i = Start; i <= End; i += Inc)
-#define loopR(i, Start, End, Dec) for (ll i = Start; i >= End; i -= Dec)
+#define rep(i, n) for (ll i = 0; i < n; i++)
+#define rev(i, n) for (ll i = n - 1; i >= 0; i--)
 
 // Printing statement
 #define dp_x(x) cout << x << endl
@@ -66,58 +66,47 @@ ll binExp(ll a, ll b)
 }
 
 // Solution Start Here
-#define REP(i, n) for (ll i = 0; i < n; i++)
-const ll M = 101;
-ll ar[M][M], I[M][M];
-
-void mul(ll A[][M], ll B[][M], ll dim)
+vector<vll> mul(vector<vll> a, vector<vll> b)
 {
-    ll res[dim + 1][dim + 1];
-    REP(i, dim)
+    ll sz = a.size();
+    vector<vll> res(sz, vll(sz, 0));
+    rep(i, sz)
     {
-        REP(j, dim)
+        rep(j, sz)
         {
-            res[i][j] = 0;
-            REP(k, dim)
+            rep(k, sz)
             {
-                ll x = (A[i][k] * B[k][j]) % mod;
+                ll x = (a[i][k] * b[k][j]) % mod;
                 res[i][j] = (res[i][j] + x) % mod;
             }
         }
     }
-    REP(i, dim)
-    REP(j, dim)
-    A[i][j] = res[i][j];
+    return res;
 }
 
-void power(ll A[][M], ll dim, ll n)
+vector<vll> power(vector<vll> v, ll dim, ll n)
 {
-    REP(i, dim)
-    REP(j, dim)
-    {
-        if (i == j)
-            I[i][j] = 1;
-        else
-            I[i][j] = 0;
-    }
+    vector<vll> I(dim, vll(dim, 0));
+    rep(i, dim) I[i][i] = 1;
     while (n)
     {
         if (n & 1)
-            mul(I, A, dim), n--;
+            I = mul(I, v), n--;
         else
-            mul(A, A, dim), n >>= 1;
+            v = mul(v, v), n >>= 1;
     }
-    REP(i, dim)
-    REP(j, dim)
-    A[i][j] = I[i][j];
+    return I;
 }
 
-void print(ll A[][M], ll dim)
+void print(vector<vll> &v)
 {
-    REP(i, dim)
+    ll sz = v.size();
+    rep(i, sz)
     {
-        REP(j, dim)
-        cout << A[i][j] << ' ';
+        rep(j, sz)
+        {
+            cout << v[i][j] << ' ';
+        }
         nl;
     }
 }
@@ -126,13 +115,16 @@ void solve()
 {
     ll dim, n;
     cin >> dim >> n;
-    REP(i, dim)
+    vector<vll> v(dim, vll(dim, 0));
+    rep(i, dim)
     {
-        REP(j, dim)
-        cin >> ar[i][j];
+        rep(j, dim)
+        {
+            cin >> v[i][j];
+        }
     }
-    power(ar, dim, n);
-    print(ar, dim);
+    vector<vll> ans = power(v, dim, n);
+    print(ans);
 }
 
 int main()
