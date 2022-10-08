@@ -16,8 +16,8 @@ typedef vector<pll> vpl;
 typedef set<ll> sll;
 
 // Loop 
-#define loop(i,Start,End,Inc) for(ll i=Start;i<=End;i+=Inc)
-#define loopR(i,Start,End,Dec) for(ll i=Start;i>=End;i-=Dec)
+#define rep(i, n) for (ll i = 0; i < n;i++)
+#define rev(i, n) for (ll i = n - 1; i >= 0;i--)
 
 // Printing statement
 #define dp_x(x) cout<<x<<endl
@@ -50,20 +50,52 @@ ll lenN(ll n)
     return res;
 }
 
-    int binExp(int a,int b,int m){
-        int ans=1;
-        while(b){
-            if(b&1)
-                ans=(ans*1LL*a)%m;
-            a=(a*1LL*a)%m;
-            b>>=1;
-        }
-        return ans;
+ll binExp(ll a,ll b){
+    ll ans = 1;
+    while(b){
+        if(b&1)
+            ans = (ans * a) % mod;
+        a = (a * a) % mod;
+        b >>= 1;
     }
+    return ans;
+}
 
 // Solution Start Here
+void mul(vector<vll>&a,vector<vll>&b){
+    ll sz = a.size();
+    vector<vll> res(sz, vll(sz, 0));
+    rep(i,sz){
+        rep(j,sz){
+            rep(k,sz){
+                ll x = (a[i][k] * b[k][j]) % mod;
+                res[i][j] = (res[i][j] + x) % mod;
+            }
+        }
+    }
+    a = res;
+}
+
+void power(vector<vll>&v,ll n){
+    vector<vll> I = {{1, 0}, {0, 1}};
+    while (n)
+    {
+        if(n&1)
+            mul(I, v),n--;
+        else
+            mul(v, v), n >>= 1;
+    }
+    v = I;
+}
+
 void solve() {
-    dp_x(binExp(3, 9, 11));
+    ll A, B, N;
+    cin >> A >> B >> N;
+    vector<vll> v = {{1, 1}, {1, 0}};
+    power(v, N - 1);
+    ll ans=A*v[0][1]+B*v[0][0];
+    cout << ans % mod;
+    nl;
 }
 
 int main() {
